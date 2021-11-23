@@ -1,5 +1,13 @@
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.10.3"}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        ;; Compojure -> A basic routing library
+        compojure/compojure {:mvn/version "1.6.2"}
+        ;; http-kit -> Our Http library for client/server
+        http-kit/http-kit {:mvn/version "2.3.0"}
+        ;; Ring defaults -> For query params
+        ring/ring-defaults {:mvn/version "0.3.2"}
+        ;; Clojure data.JSON library
+        org.clojure/data.json {:mvn/version "2.4.0"}}
  :aliases
  {:run-m {:main-opts ["-m" "snorlax.api-playground"]}
   :run-x {:ns-default snorlax.api-playground
