@@ -1,14 +1,12 @@
 # api-playground
 
-FIXME: my new application.
+Clojure REST API made simple
 
 ## Installation
 
 Download from https://github.com/snorlax/api-playground
 
 ## Usage
-
-FIXME: explanation
 
 Run the project directly, via `:exec-fn`:
 
