@@ -1,14 +1,15 @@
 (ns snorlax.api-playground
-  (:require [org.httpkit.server :as server]
-            [compojure.core :refer :all]
-            [compojure.route :as route]
-            [ring.middleware.defaults :refer :all]
-            [clojure.pprint :as pp]
+  (:require [org.httpkit.server :as server] ;; Http client/server, without this we can start our server since it does not come already build in when we install clojure on our PCs like in python..
+            [compojure.core :refer :all] ;; Used for creating a RING HANDLER THAT IS PASSED TO WRAP DEFAULTS! (creating our routes...)
+            [compojure.route :as route] ;; Used for our "not-found" route (READ DOCS!)
+            [ring.middleware.defaults :refer :all] ;; Routing configuration, protection etc... (READ DOCS!)
+            [clojure.pprint :as pp] ;; Used to format a text ? (CHECK THIS!)
             [clojure.string :as str]
-            [clojure.data.json :as json])
+            [clojure.data.json :as json]) ;; Used for converting clojure data-types to JSON and vice-versa.. (CHECK DOCS!)
   (:gen-class))
 
 ;; Here we will create new atom called people-collection, which will store vector of people. (mutable collection)
+;; THIS MAY BE A GOOD OPPORTUNITY TO USE "defrecord" FOR MAKING A SINGLE PERSON BEFORE PUSHING IT IN PEOPLE COLLECTION AND RESTRICT PERSON PARAMS TO ONLY FIRSTNAME AND LAST NAME.. (CHECK THIS!)
 (def people-collection (atom []))
 
 
@@ -50,7 +51,7 @@
    :body (str (json/write-str @people-collection))})
 ;; This function takes our collection and converts all of the mapped key value pairs into JSON.
 
-;; Here we will make a clear people-collection function
+;; Here we will make a reset! people-collection function
 (defn reset-people-collection
   [req]
   (do
@@ -76,11 +77,12 @@
    :headers {"Content-Type" "text/json"}
    :body (-> (let [p (partial getparameter req)]
                (str (json/write-str (add-person (p :firstname) (p :lastname))))))})
+;; p :firstname is same as (:firstname (:param req))
 
-;; Here we will enable rest-api users to update our people-collection atom, they will send request and will will extract info from nested :params
+;; Here we will enable rest-api users to update our people-collection atom, they will send request and will will extract info from nested :params (CHECK PARAMS IN TERMINAL OR /request ROUTE!)
 
 
-;; Here we will define routes:
+;; Here we will define routes by using compojures -> defroutes:
 (defroutes app-routes
   (GET "/" [] simple-body-page)
   (GET "/request" [] request-example)
@@ -99,8 +101,11 @@
     ;; Run the server with Ring.defaults middleware
     (server/run-server (wrap-defaults #'app-routes site-defaults)
                        {:port port})
+    ;; wrap defaults is from Ring middleware, we pass it our routes and default confing..
+    ;; Some of default configs are: 1. api-default (CHECK EXP.. IN DOCS) 2. site-defaults (gives support for cookies, parameters or params', sessions, current selected lang (i18next) in browser etc... this list of supported stuff can be seen in terminal when we start server via -main func and call for basic route (in this case we can see request json in browser with /request route)) 3. secure-api-defaults and secure-site-defaults, more secure ways for Ring configurations (READ DOCS FOR MORE INFO..)
+
     ;; Run the server without ring defaults
-    ;; (server/run-server #'app-routes {:port port})
+    ;; (server/run-server #'app-routes {:port port}) WITH THIS WE DONT HAVE ACCESS TO COOKIES, PARAMS ETC....
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
 
 
@@ -108,6 +113,10 @@
 
 #_(Integer/parseInt "3000")
 ;; => 3000 -> our port variable value (System/getenv "PORT") returns nil? (CHECK THIS!)
+
+#_(int "3000") ;; THIS TROWS ERROR
+
+
 
 ;; Why do we use #' ???
 #_#'app-routes
@@ -120,6 +129,12 @@
 ;; (add-person "Mark" "Adams")
 
 
+;;TO-DO!
+;; MAKE DELETE FUNCTION FOR PEOPLE COLLECTION. (DONE!)
+;; WHY CHANGING THE GET METHOD TO POST DOESNT WORK?
+;; HOW TO USE DIFFERENT ROUTING METHODS?
+;; LEARN HOW TO USE PARTIAL FUNCTION ON DIFFERENT EXAMPLES!
+;; READ DOCS..
 
 
 
