@@ -48,7 +48,9 @@
   [req]
   {:status 200
    :headers {"Content-Type" "text/json"}
-   :body (str (json/write-str @people-collection))})
+   :body (if (= @people-collection [])
+           "Your people' list is empty, populate it whit /people/add route"
+           (str (json/write-str @people-collection)))})
 ;; This function takes our collection and converts all of the mapped key value pairs into JSON.
 
 ;; Here we will make a reset! people-collection function
